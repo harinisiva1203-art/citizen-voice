@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Authority Dashboard</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+.hidden { display: none; }
+.card { border: 1px solid #ccc; border-radius: 8px; padding: 15px; margin-bottom: 15px; max-width: 600px; margin:auto; }
+input, select, button { width: 100%; padding: 8px; margin: 8px 0; border-radius: 4px; border: 1px solid #ccc; }
+button { background-color: #007bff; color: white; cursor: pointer; }
+button:hover { background-color: #0056b3; }
+h2, h3 { text-align: center; }
+.highlight { background-color: #ffeaa7; padding: 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Login Form -->
+<div id="loginForm" class="card">
+  <h2>Executive Officer Login</h2>
+  <label for="ulbType">Select ULB Type</label>
+  <select id="ulbType">
+    <option value="">-- Select --</option>
+    <option value="municipal_corporation">Municipal Corporation</option>
+    <option value="municipal_council">Municipal Council</option>
+    <option value="nagar_panchayat">Nagar Panchayat</option>
+  </select>
+
+  <label for="officerId">Officer ID</label>
+  <input type="text" id="officerId" placeholder="Enter Officer ID">
+
+  <label for="password">Password</label>
+  <input type="password" id="password" placeholder="Enter Password">
+
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" class="hidden">
+  <h2>Welcome, <span id="authName"></span></h2>
+  <button onclick="showModule('reports')">Citizen Reports</button>
+  <button onclick="showModule('employees')">Manage Employees</button>
+  <button onclick="showModule('updates')">Work Updates</button>
+  <button onclick="showModule('notifications')">Notifications</button>
+  <div id="moduleContent"></div>
+</div>
+
+<script>
+const authorities = [
+  { id: "MC-RNC-001", ulb:"municipal_corporation", password:"RNC", name:"Ranchi MC Authority", region:"Ranchi" },
+  { id: "MC-DHN-001", ulb:"municipal_corporation", password:"DHN", name:"Dhanbad MC Authority", region:"Dhanbad" },
+  { id: "MC-DEO-001", ulb:"municipal_corporation", password:"DEO", name:"Deoghar MC Authority", region:"Deoghar" },
+  { id: "MC-ADI-001", ulb:"municipal_corporation", password:"ADI", name:"Adityapur MC Authority", region:"Seraikela Kharsawan" },
+  { id: "MC-CHA-001", ulb:"municipal_corporation", password:"CHA", name:"Chas MC Authority", region:"Bokaro" },
+  { id: "MC-MED-001", ulb:"municipal_corporation", password:"MED", name:"Medininagar MC Authority", region:"Palamu" },
+  { id: "MC-HAZ-001", ulb:"municipal_corporation", password:"HAZ", name:"Hazaribagh MC Authority", region:"Hazaribagh" },
+  { id: "MC-GIR-001", ulb:"municipal_corporation", password:"GIR", name:"Giridih MC Authority", region:"Giridih" },
+  { id: "MC-MAN-001", ulb:"municipal_corporation", password:"MAN", name:"Mango MC Authority", region:"East Singhbhum" },
+
+  { id: "MCO-MAD-001", ulb:"municipal_council", password:"MAD", name:"Madhupur MCO Authority", region:"Deoghar" },
+  { id: "MCO-PHU-001", ulb:"municipal_council", password:"PHU", name:"Phusro MCO Authority", region:"Bokaro" },
+  { id: "MCO-RAM-001", ulb:"municipal_council", password:"RAM", name:"Ramgarh MCO Authority", region:"Ramgarh" },
+  { id: "MCO-CHB-001", ulb:"municipal_council", password:"CHB", name:"Chaibasa MCO Authority", region:"West Singhbhum" },
+  { id: "MCO-CHK-001", ulb:"municipal_council", password:"CHK", name:"Chakradharpur MCO Authority", region:"West Singhbhum" },
+  { id: "MCO-KAP-001", ulb:"municipal_council", password:"KAP", name:"Kapali MCO Authority", region:"Seraikela Kharsawan" },
+  { id: "MCO-MIH-001", ulb:"municipal_council", password:"MIH", name:"Mihijam MCO Authority", region:"Jamtara" },
+  { id: "MCO-LOH-001", ulb:"municipal_council", password:"LOH", name:"Lohardaga MCO Authority", region:"Lohardaga" },
+  { id: "MCO-GUM-001", ulb:"municipal_council", password:"GUM", name:"Gumla MCO Authority", region:"Gumla" },
+  { id: "MCO-SIM-001", ulb:"municipal_council", password:"SIM", name:"Simdega MCO Authority", region:"Simdega" },
+  { id: "MCO-CHA-002", ulb:"municipal_council", password:"CHA", name:"Chatra MCO Authority", region:"Chatra" },
+  { id: "MCO-KOD-001", ulb:"municipal_council", password:"KOD", name:"Koderma MCO Authority", region:"Koderma" },
+
+  { id: "NP-BUN-001", ulb:"nagar_panchayat", password:"BUN", name:"Bundu NP Authority", region:"Ranchi" },
+  { id: "NP-KHU-001", ulb:"nagar_panchayat", password:"KHU", name:"Khunti NP Authority", region:"Khunti" },
+  { id: "NP-BAG-001", ulb:"nagar_panchayat", password:"BAG", name:"Bagra NP Authority", region:"Chatra" },
+  { id: "NP-DOM-001", ulb:"nagar_panchayat", password:"DOM", name:"Domchanch NP Authority", region:"Koderma" },
+  { id: "NP-BAR-001", ulb:"nagar_panchayat", password:"BAR", name:"Barhi Sariya NP Authority", region:"Giridih" },
+  { id: "NP-DHN-001", ulb:"nagar_panchayat", password:"DHN", name:"Dhanwar NP Authority", region:"Giridih" },
+  { id: "NP-HUS-001", ulb:"nagar_panchayat", password:"HUS", name:"Hussainabad NP Authority", region:"Palamu" },
+  { id: "NP-CHT-001", ulb:"nagar_panchayat", password:"CHT", name:"Chhatarpur NP Authority", region:"Palamu" },
+  { id: "NP-HAR-001", ulb:"nagar_panchayat", password:"HAR", name:"Hariharganj NP Authority", region:"Palamu" },
+  { id: "NP-UNT-001", ulb:"nagar_panchayat", password:"UNT", name:"Nagar Untari NP Authority", region:"Garhwa" },
+  { id: "NP-MAJ-001", ulb:"nagar_panchayat", password:"MAJ", name:"Majhiyanv NP Authority", region:"Garhwa" },
+  { id: "NP-CHK-001", ulb:"nagar_panchayat", password:"CHK", name:"Chakulia NP Authority", region:"East Singhbhum" },
+  { id: "NP-SAR-001", ulb:"nagar_panchayat", password:"SAR", name:"Saraikela NP Authority", region:"Seraikela Kharsawan" },
+  { id: "NP-JAM-001", ulb:"nagar_panchayat", password:"JAM", name:"Jamtara NP Authority", region:"Jamtara" },
+  { id: "NP-BAS-001", ulb:"nagar_panchayat", password:"BAS", name:"Basukinath NP Authority", region:"Dumka" },
+  { id: "NP-BHR-001", ulb:"nagar_panchayat", password:"BHR", name:"Barharwa NP Authority", region:"Sahebganj" },
+  { id: "NP-RAJ-001", ulb:"nagar_panchayat", password:"RAJ", name:"Rajmahal NP Authority", region:"Sahebganj" },
+  { id: "NP-MAH-001", ulb:"nagar_panchayat", password:"MAH", name:"Mahagama NP Authority", region:"Godda" }
+];
+
+const employees = [
+  {id:1, name:"Employee A", domain:"Civic Services", region:"Ranchi"},
+  {id:2, name:"Employee B", domain:"Infrastructure & Mobility", region:"Ranchi"},
+  {id:3, name:"Employee C", domain:"Health & Education", region:"Bokaro"},
+  {id:4, name:"Employee D", domain:"Environment", region:"Ranchi"}
+];
+
+const reports = [
+  {id:101, issue:"Pothole on Main Road", domain:"Civic Services", region:"Ranchi", count:5, status:"Pending", feedbacks:["Citizen: This is dangerous for school buses"]},
+  {id:102, issue:"Water leakage in Ward 2", domain:"Infrastructure & Mobility", region:"Ranchi", count:2, status:"In Progress", feedbacks:["Citizen: Water wasted daily"]},
+  {id:103, issue:"Streetlight not working", domain:"Civic Services", region:"Ranchi", count:3, status:"Completed", feedbacks:[]},
+  {id:104, issue:"Garbage not collected", domain:"Environment", region:"Ranchi", count:4, status:"In Progress", feedbacks:["Citizen: Smells very bad"]}
+];
+
+
+const notifications = [
+  { id:1, type:"report", message:"New citizen report filed in Ranchi region", timestamp:new Date().toLocaleString(), read:false },
+  { id:2, type:"reminder", message:"3 pending reports older than 7 days", timestamp:new Date().toLocaleString(), read:false },
+  { id:3, type:"system", message:"System update: New employee domain added", timestamp:new Date().toLocaleString(), read:false }
+];
+
+let loggedIn = null;
+let lastViewedReports = [];
+
+function login(){
+  const ulbType = document.getElementById('ulbType').value;
+  const id = document.getElementById('officerId').value;
+  const password = document.getElementById('password').value;
+
+  if(!ulbType || !id || !password){
+    alert("Please fill all details");
+    return;
+  }
+
+  // Fixed variable reference
+  const officer = authorities.find(o=>o.id===id && o.ulb===ulbType && o.password===password);
+  if(officer){
+    loggedIn = officer;
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('authName').innerText = officer.name;
+    lastViewedReports = [];
+    showModule('reports');
+  } else {
+    alert("Invalid Officer ID, ULB type, or Password");
+  }
+}
+
+
+// The rest of your code remains the same...
+const feedbacks = []; // Array to store feedback entries
+
+function showModule(module){
+  const container = document.getElementById('moduleContent');
+  container.innerHTML = "";
+
+  if(module==='updates'){
+  container.innerHTML="<h3>Work Updates</h3>";
+  const updates = reports.filter(r=>r.region===loggedIn.region);
+  if(updates.length===0) {
+    container.innerHTML+="<p>No updates yet.</p>";
+    return;
+  }
+  updates.forEach(u=>{
+    const div=document.createElement('div');
+    div.className='card highlight';
+    div.innerHTML=`<strong>${u.issue}</strong><br>Status: ${u.status}`;
+
+    // Show existing citizen + authority feedback
+    if(u.feedbacks && u.feedbacks.length > 0){
+      div.innerHTML += "<h4>Feedbacks:</h4>";
+      u.feedbacks.forEach(f=>{
+        div.innerHTML += `<p>• ${f}</p>`;
+      });
+    } else {
+      div.innerHTML += "<p>No feedback yet.</p>";
+    }
+
+    // Add authority feedback form
+    div.innerHTML += `
+      <textarea id="fb_${u.id}" rows="2" style="width:100%; margin-top:5px;" placeholder="Add instruction/feedback"></textarea>
+      <button onclick="submitReportFeedback(${u.id})">Submit Feedback</button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+
+  if(module==='employees'){
+    container.innerHTML="<h3>Manage Employees</h3>";
+    const domains = [...new Set(employees.map(e=>e.domain))];
+    domains.forEach(domain=>{
+      container.innerHTML += `<h4>${domain}</h4>`;
+      const empList = employees.filter(e=>e.domain===domain && e.region===loggedIn.region);
+      empList.forEach(emp=>{
+        container.innerHTML += `<div class="card">${emp.name} - ${emp.domain}</div>`;
+      });
+    });
+  }
+
+  if(module==='notifications'){
+  container.innerHTML = "<h3>Notifications</h3>";
+  renderNotifications();
+}
+
+  if(module==='updates'){
+    container.innerHTML="<h3>Work Updates</h3>";
+    const updates = reports.filter(r=>r.status!=="Pending" && r.region===loggedIn.region);
+    if(updates.length===0) container.innerHTML+="<p>No updates yet.</p>";
+    updates.forEach(u=>{
+      const div=document.createElement('div');
+      div.className='card highlight';
+      div.innerHTML=`<strong>${u.issue}</strong><br>Status: ${u.status}`;
+      container.appendChild(div);
+    });
+  }
+
+  if(module==='feedback'){
+    container.innerHTML = `<h3>Feedback Module</h3>
+      <label for="feedbackText">Enter Feedback:</label>
+      <textarea id="feedbackText" rows="4" style="width:100%; padding:5px;"></textarea>
+      <button onclick="submitFeedback()">Submit Feedback</button>
+      <h4>Previous Feedbacks:</h4>
+      <div id="feedbackList"></div>`;
+    renderFeedbacks();
+  }
+}
+
+function submitFeedback(){
+  const text = document.getElementById('feedbackText').value.trim();
+  if(!text){
+    alert("Feedback cannot be empty!");
+    return;
+  }
+  feedbacks.push({officer: loggedIn.name, text: text, timestamp: new Date().toLocaleString()});
+  document.getElementById('feedbackText').value = "";
+  renderFeedbacks();
+}
+
+function renderFeedbacks(){
+  const list = document.getElementById('feedbackList');
+  list.innerHTML = "";
+  if(feedbacks.length === 0){
+    list.innerHTML = "<p>No feedback submitted yet.</p>";
+    return;
+  }
+  feedbacks.filter(f => f.officer === loggedIn.name).forEach(f=>{
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<strong>${f.timestamp}</strong><br>${f.text}`;
+    list.appendChild(div);
+  });
+}
+
+</script>
+</body>
+</html>
