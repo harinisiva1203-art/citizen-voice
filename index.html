@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Civic Engagement Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+body{
+  height:100vh;
+  background:linear-gradient(135deg,#e0eafc,#cfdef3);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Container */
+.front-container{
+  display:flex;
+  gap:40px;
+}
+
+/* Card */
+.role-card{
+  width:180px;
+  height:220px;
+  background:white;
+  border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  transition:all 0.3s ease;
+}
+
+.role-card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 12px 25px rgba(0,0,0,0.25);
+}
+
+/* Icon */
+.role-icon{
+  font-size:50px;
+  margin-bottom:15px;
+}
+
+/* Text */
+.role-card h3{
+  font-size:20px;
+  font-weight:600;
+  color:#0a3d62;
+}
+
+.role-card p{
+  font-size:13px;
+  color:#555;
+  margin-top:6px;
+}
+
+/* Top border colors */
+.citizen{border-top:6px solid #1abc9c;}
+.authority{border-top:6px solid #3498db;}
+.employee{border-top:6px solid #e67e22;}
+</style>
+</head>
+
+<body>
+
+<div class="front-container">
+
+  <!-- CITIZEN -->
+  <div class="role-card citizen" onclick="window.location.href='citizen.html'">
+    <div class="role-icon">👤</div>
+    <h3>Citizen</h3>
+    <p>Raise public issues</p>
+  </div>
+
+  <!-- AUTHORITY -->
+  <div class="role-card authority" onclick="window.location.href='authority.html'">
+    <div class="role-icon">🏛️</div>
+    <h3>Authority</h3>
+    <p>Manage & resolve</p>
+  </div>
+
+  <!-- EMPLOYEE -->
+  <div class="role-card employee" onclick="window.location.href='employee.html'">
+    <div class="role-icon">🧑‍🔧</div>
+    <h3>Employee</h3>
+    <p>Field operations</p>
+  </div>
+
+</div>
+
+</body>
+</html>
+
