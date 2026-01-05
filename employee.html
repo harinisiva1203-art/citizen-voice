@@ -20,19 +20,6 @@
     justify-content:center;
     align-items:center;
   }
-  /* role selection */
-  .role-selection{display:flex;gap:2rem;text-align:center;}
-  .role{
-    background:white;
-    border-radius:12px;
-    padding:1.5rem;
-    width:150px;
-    cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    transition:transform 0.3s, box-shadow 0.3s;
-  }
-  .role:hover{transform:translateY(-5px);box-shadow:0 6px 14px rgba(0,0,0,0.2);}
-  .role img{width:64px;height:64px;margin-bottom:1rem;}
 
   .login-card, .dashboard, .feature{
     display:none;
@@ -44,12 +31,14 @@
     text-align:center;
   }
   .active{display:block;}
+
   input,select,textarea,button{
     width:100%;padding:0.5rem;margin:0.5rem 0;border-radius:6px;border:1px solid #ccc;
   }
   button.primary{background:var(--gov-blue);color:white;border:none;font-weight:bold;cursor:pointer;}
   button.primary:hover{background:#074470;}
   button.back-btn{background:var(--danger);color:white;border:none;cursor:pointer;padding:0.5rem;}
+
   .dashboard-icons{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
   .dash-icon{
     background:#fff;
@@ -62,53 +51,19 @@
   }
   .dash-icon:hover{transform:scale(1.05);}
   .dash-icon img{width:48px;height:48px;margin-bottom:0.5rem;}
+
   .menu-bar{display:flex;align-items:center;justify-content:space-between;}
   .menu-btn{font-size:24px;cursor:pointer;}
 </style>
 </head>
 <body>
 
-<!-- Role Selection -->
-<div class="role-selection" id="roleSelection">
-  <div class="role" onclick="openLogin('citizenLogin')">
-    <img src="https://img.icons8.com/ios-filled/100/0a3d62/conference-call.png"/>
-    <h3>Citizen</h3>
-  </div>
-  <div class="role" onclick="openLogin('authorityLogin')">
-    <img src="https://img.icons8.com/ios-filled/100/0a3d62/administrative-tools.png"/>
-    <h3>Authority</h3>
-  </div>
-  <div class="role" onclick="openLogin('employeeLogin')">
-    <img src="https://img.icons8.com/ios-filled/100/0a3d62/worker-male.png"/>
-    <h3>Employee</h3>
-  </div>
-</div>
-
-<!-- Citizen Login -->
-<div class="login-card" id="citizenLogin">
-  <h2>Citizen Login</h2>
-  <input type="text" id="citizenAadhaar" placeholder="Aadhaar Number"/>
-  <input type="text" id="citizenName" placeholder="Your Name"/>
-  <button class="primary" onclick="citizenLogin()">Login</button>
-  <button class="back-btn" onclick="goBack()">Back</button>
-</div>
-
-<!-- Authority Login -->
-<div class="login-card" id="authorityLogin">
-  <h2>Authority Login</h2>
-  <input type="text" id="authorityDept" placeholder="Department"/>
-  <input type="password" id="authorityPass" placeholder="Password"/>
-  <button class="primary" onclick="authorityLogin()">Login</button>
-  <button class="back-btn" onclick="goBack()">Back</button>
-</div>
-
-<!-- Employee Login -->
-<div class="login-card" id="employeeLogin">
+<!-- Employee Login (START PAGE) -->
+<div class="login-card active" id="employeeLogin">
   <h2>Employee Login</h2>
   <input type="text" id="empId" placeholder="Employee ID"/>
   <input type="password" id="empPass" placeholder="Password"/>
   <button class="primary" onclick="empDepartmentStep()">Login</button>
-  <button class="back-btn" onclick="goBack()">Back</button>
 </div>
 
 <!-- Step 2: Department + ULB Login -->
@@ -181,43 +136,17 @@
 </div>
 
 <script>
-  // Demo credentials
   const demoAccounts = {
-    citizen: { aadhaar: "123412341234", name: "John Doe" },
-    authority: { dept: "sanitation", pass: "admin123" },
     employee: { id: "EMP001", pass: "emp@123" },
     departments: {
       "Ranchi Municipal Corporation": { id: "MC-RAN-EMP-001", pass: "ran@123" },
       "Dhanbad Municipal Corporation": { id: "MC-DHN-EMP-002", pass: "dhn@123" },
       "Deoghar Municipal Corporation": { id: "MC-DEO-EMP-003", pass: "deo@123" },
       "Adityapur Municipal Corporation": { id: "MC-ADP-EMP-004", pass: "adp@123" },
-      "Chas Municipal Corporation": { id: "MC-CHS-EMP-005", pass: "chs@123" },
-      "Medininagar Municipal Corporation": { id: "MC-MED-EMP-006", pass: "med@123" },
-      "Hazaribagh Municipal Corporation": { id: "MC-HAZ-EMP-007", pass: "haz@123" },
-      "Giridih Municipal Corporation": { id: "MC-GIR-EMP-008", pass: "gir@123" },
-      "Mango Municipal Corporation": { id: "MC-MNG-EMP-009", pass: "mng@123" },
-      "Bundu Nagar Panchayat": { id: "NP-RAN-EMP-01", pass: "np@123" },
-      "Khunti Nagar Panchayat": { id: "NP-KHU-EMP-01", pass: "np@123" },
-      "Bagra Nagar Panchayat": { id: "NP-CHA-EMP-01", pass: "np@123" },
-      "Domchanch Nagar Panchayat": { id: "NP-KOD-EMP-01", pass: "np@123" },
-      "Barhi Sariya Nagar Panchayat": { id: "NP-GIR-EMP-01", pass: "np@123" },
-      "Dhanwar Nagar Panchayat": { id: "NP-GIR-EMP-02", pass: "np@123" },
-      "Hussainabad Nagar Panchayat": { id: "NP-PAL-EMP-01", pass: "np@123" },
-      "Chhatarpur Nagar Panchayat": { id: "NP-PAL-EMP-02", pass: "np@123" },
-      "Hariharganj Nagar Panchayat": { id: "NP-PAL-EMP-03", pass: "np@123" },
-      "Nagar Untari Nagar Panchayat": { id: "NP-GAR-EMP-01", pass: "np@123" },
-      "Majhiyanv Nagar Panchayat": { id: "NP-GAR-EMP-02", pass: "np@123" },
-      "Chakulia Nagar Panchayat": { id: "NP-EAS-EMP-01", pass: "np@123" },
-      "Saraikela Nagar Panchayat": { id: "NP-SER-EMP-01", pass: "np@123" },
-      "Jamtara Nagar Panchayat": { id: "NP-JAM-EMP-01", pass: "np@123" },
-      "Basukinath Nagar Panchayat": { id: "NP-DUM-EMP-01", pass: "np@123" },
-      "Barharwa Nagar Panchayat": { id: "NP-SAH-EMP-01", pass: "np@123" },
-      "Rajmahal Nagar Panchayat": { id: "NP-SAH-EMP-02", pass: "np@123" },
-      "Mahagama Nagar Panchayat": { id: "NP-GOD-EMP-01", pass: "np@123" }
+      "Chas Municipal Corporation": { id: "MC-CHS-EMP-005", pass: "chs@123" }
     }
   };
 
-  // Auto-fill ULB dropdown
   window.onload = function () {
     const ulbSelect = document.getElementById("empULB");
     Object.keys(demoAccounts.departments).forEach(ulb => {
@@ -228,51 +157,17 @@
     });
   };
 
-  function openLogin(id){
-    document.getElementById("roleSelection").style.display="none";
-    document.querySelectorAll('.login-card').forEach(c=>c.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-  function goBack(){
-    document.querySelectorAll('.login-card').forEach(c=>c.classList.remove('active'));
-    document.getElementById("roleSelection").style.display="flex";
-  }
-
-  function citizenLogin(){
-    const aadhaar = document.getElementById("citizenAadhaar").value.trim();
-    const name = document.getElementById("citizenName").value.trim();
-    if(aadhaar === demoAccounts.citizen.aadhaar && name === demoAccounts.citizen.name){
-      alert("Citizen login successful ✅");
-      goBack(); 
-    } else {
-      alert("❌ Invalid Citizen credentials.\nTry Aadhaar: 123412341234 & Name: John Doe");
-    }
-  }
-
-  function authorityLogin(){
-    const dept = document.getElementById("authorityDept").value.trim().toLowerCase();
-    const pass = document.getElementById("authorityPass").value.trim();
-    if(dept === demoAccounts.authority.dept && pass === demoAccounts.authority.pass){
-      alert("Authority login successful ✅");
-      goBack(); 
-    } else {
-      alert("❌ Invalid Authority credentials.\nTry Dept: sanitation & Password: admin123");
-    }
-  }
-
-  // Step 1: Employee base login
   function empDepartmentStep(){
     const id = document.getElementById("empId").value.trim();
     const pass = document.getElementById("empPass").value.trim();
     if(id === demoAccounts.employee.id && pass === demoAccounts.employee.pass){
-      document.querySelectorAll('.login-card').forEach(c=>c.classList.remove('active'));
+      document.getElementById("employeeLogin").classList.remove('active');
       document.getElementById("departmentLogin").classList.add('active');
     } else {
       alert("❌ Invalid Employee credentials.\nTry ID: EMP001, Pass: emp@123");
     }
   }
 
-  // Step 2: Departmental login
   function deptLogin(){
     const ulb = document.getElementById("empULB").value.trim();
     const deptId = document.getElementById("deptId").value.trim();
@@ -280,7 +175,7 @@
     const deptCreds = demoAccounts.departments[ulb];
 
     if(ulb && deptCreds && deptId === deptCreds.id && deptPass === deptCreds.pass){
-      document.querySelectorAll('.login-card').forEach(c=>c.classList.remove('active'));
+      document.getElementById("departmentLogin").classList.remove('active');
       document.getElementById("employeeDashboard").classList.add('active');
     } else {
       alert(`❌ Invalid Departmental credentials.\nTry ID: ${deptCreds?.id}, Pass: ${deptCreds?.pass}`);
@@ -301,45 +196,29 @@
     document.getElementById("employeeDashboard").classList.remove('active');
     document.querySelectorAll('.feature').forEach(f=>f.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-
-    if(id === "updateIssue"){
-      detectLocation();
-    }
+    if(id === "updateIssue"){ detectLocation(); }
   }
 
   function empMenu(){ openFeature('menuOptions'); }
+
   function logout(){
     document.querySelectorAll('.dashboard, .feature').forEach(e=>e.classList.remove('active'));
-    document.getElementById("roleSelection").style.display="flex";
+    document.getElementById("employeeLogin").classList.add('active');
   }
 
-  // 🌍 Location detection
   function detectLocation(){
     if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(successLocation, errorLocation);
-    } else {
-      alert("Geolocation is not supported by this browser.");
+      navigator.geolocation.getCurrentPosition(pos=>{
+        document.getElementById("lat").value = pos.coords.latitude;
+        document.getElementById("lon").value = pos.coords.longitude;
+      });
     }
-  }
-  function successLocation(position){
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-    document.getElementById("lat").value = lat;
-    document.getElementById("lon").value = lon;
-  }
-  function errorLocation(err){
-    alert("Unable to retrieve location: " + err.message);
   }
 
   function submitUpdate(){
     const issue = document.getElementById("issueDesc").value.trim();
-    const lat = document.getElementById("lat").value;
-    const lon = document.getElementById("lon").value;
-    if(!issue){
-      alert("⚠️ Please describe the issue before submitting.");
-      return;
-    }
-    alert(`✅ Issue submitted!\n\n${issue}\nLat: ${lat}, Lon: ${lon}`);
+    if(!issue){ alert("⚠️ Please describe the issue."); return; }
+    alert("✅ Issue submitted successfully!");
     backToDash();
   }
 </script>
