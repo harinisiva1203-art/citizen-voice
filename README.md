@@ -27,8 +27,12 @@ Employee (2-Step Login) :
 Step 1: Employee Login
 ID: EMP001
 Password: emp@123
+
 Step 2: Department Login
 ULB: Ranchi Municipal Corporation
+
 Dept ID: MC-RAN-EMP-001
+
 Password: ran@123
+
 Multiple demo credentials are pre-defined in the code for different ULBs and departments.
