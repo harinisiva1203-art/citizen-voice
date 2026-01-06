@@ -10,9 +10,11 @@ Open index.html in any modern web browser.
 
 User Roles:
 
-Citizen – Report civic issues with location & media
-Authority – View and manage reported issues
-Employee – Update on-ground work status
+Citizen : Report civic issues with location & media
+
+Authority : View and manage reported issues
+
+Employee : Update on-ground work status
 
 Demo Login Credentials (Sample)
 
