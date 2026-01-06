@@ -11,9 +11,7 @@ Open index.html in any modern web browser.
 User Roles:
 
 Citizen – Report civic issues with location & media
-
 Authority – View and manage reported issues
-
 Employee – Update on-ground work status
 
 Demo Login Credentials (Sample)
@@ -26,11 +24,13 @@ Password: RNC
 Employee (2-Step Login) :
 
 Step 1:
+
 Employee Login
 ID: EMP001
 Password: emp@123
 
 Step 2:
+
 Department Login
 ULB: Ranchi Municipal Corporation
 
