@@ -1,4 +1,6 @@
+#citizen voice
 Citizen Voice – Civic Engagement Portal (MVP)
+#About
 Citizen Voice is a role-based civic issue reporting platform that connects citizens, authorities, and municipal employees to improve issue reporting, tracking, and resolution.
 This project is built as a hackathon MVP focusing on user flow, role separation, and usability.
 How to Run
